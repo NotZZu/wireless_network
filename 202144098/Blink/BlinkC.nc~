@@ -1,0 +1,32 @@
+ 1 #include <Timer.h>
+  2
+  3 module BlinkC @safe()
+  4 {
+  5         uses interface Timer<TMilli> as Timer0;
+  6         uses interface Timer<TMilli> as Timer1;
+  7         uses interface Timer<TMilli> as Timer2;
+  8         uses interface Leds;
+  9         uses interface Boot;
+ 10 }
+ 11 implementation
+ 12 {
+ 13         event void Boot.booted()
+ 14         {
+ 15                 call Timer0.startPeriodic(250);
+ 16                 call Timer1.startPeriodic(500);
+ 17                 call Timer2.startPeriodic(1000);
+ 18         }
+ 19
+ 20         event void Timer0.fired()
+ 21         {
+ 22                 call Leds.led0Toggle();
+ 23         }
+ 24         event void Timer1.fired()
+ 25         {
+ 26                 call Leds.led1Toggle();
+ 27         }
+ 28         event void Timer2.fired()
+ 29         {
+ 30                 call Leds.led2Toggle();
+ 31         }
+ 32 }
