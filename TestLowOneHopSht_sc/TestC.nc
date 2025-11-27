@@ -1,0 +1,46 @@
+module TestC {
+        uses interface Boot;
+        uses interface Leds;
+        uses interface Timer<TMilli> as MilliTimer;
+        uses interface Read<uint16_t> as ReadTemp;
+        uses interface Read<uint16_t> as ReadHumi;
+        uses interface Read<uint16_t> as ReadIllu;
+}
+implementation {
+        event void Boot.booted() {
+                //call Leds.led0Toggle();
+                call MilliTimer.startPeriodic(TEST_PERIOD);
+        }
+        event void MilliTimer.fired() {
+                call ReadTemp.read();
+        }
+        event void ReadTemp.readDone(error_t err, uint16_t val)
+        {
+                if (err == SUCCESS){
+                        call Leds.led1Toggle();
+                }
+                else {
+                        call Leds.led2Toggle();
+                }
+                call ReadHumi.read();
+        }
+        event void ReadHumi.readDone(error_t err, uint16_t val)
+        {
+                if (err == SUCCESS) {
+                        call Leds.led1Toggle();
+                }
+                else {
+                        call Leds.led2Toggle();
+                }
+                call ReadIllu.read();
+        }
+        event void ReadIllu.readDone(error_t err, uint16_t)
+        {
+                if (err == SUCCESS) {
+                        call Leds.led1Toggle();
+                }
+                else {
+                        call Leds.led2Toggle();
+                }
+        }
+}
